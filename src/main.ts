@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { select } from 'three/tsl';
 
 // Used to import GLB models into the scene
 const gltfLoader = new GLTFLoader();
@@ -91,7 +90,7 @@ extendButton.addEventListener('click', () => {
     const duration = 200;
     const startTime = performance.now();
     const startScale = selectedModelMesh.userData.currentScale || 1;
-    
+
     // For now, extent the selected model by 1 unit in the X direction
     const endScale = startScale + 1;
     const mesh = selectedModelMesh;
@@ -102,15 +101,13 @@ extendButton.addEventListener('click', () => {
         const newScale = startScale + (endScale - startScale) * t;
 
         // if something happens to the mesh's existence, stop the animation
-        if (!mesh) {
-            return;
-        }
+        if (!mesh) return;
 
         // Scale the mesh in the X direction
         scaleObjectMeshInXDirection(mesh as THREE.Mesh, newScale);
-        
+
         // while extending the mesh, if it is still the selected model, update the selection indicator position
-        if(mesh === selectedModelMesh) {
+        if (mesh === selectedModelMesh) {
             repositionSelectionIndicator();
         }
         // Continue the animation until the duration is reached
@@ -133,6 +130,7 @@ function loadGLBModel(source: string): Promise<THREE.Group> {
             (gltf) => {
                 const model = gltf.scene;
                 selectableObjects.push(model);
+                // Floor the model to the ground
                 adjustYPositionOfObjectToBeOnFloor(model);
                 resolve(model);
                 scene.add(model);
@@ -199,7 +197,7 @@ function scaleObjectMeshInXDirection(mesh: THREE.Mesh, scaleFactor = 2) {
             if (!mesh.userData.originalPositions) {
                 mesh.userData.originalPositions = positionAttribute.array.slice() as Float32Array;
             }
-            
+
             // Ensure bounding box is computed and not null
             if (!geometry.boundingBox) {
                 geometry.computeBoundingBox();
@@ -213,11 +211,12 @@ function scaleObjectMeshInXDirection(mesh: THREE.Mesh, scaleFactor = 2) {
             const vertexXValueCount = originalPositions.length / 3;
 
             for (let i = 0; i < vertexXValueCount; i++) {
-                currentPositions[i * 3] = ((originalPositions[i * 3] - xMin) * scaleFactor) + xMin; // Scale X by 2
+            // Scale the X position of each vertex
+                currentPositions[i * 3] = ((originalPositions[i * 3] - xMin) * scaleFactor) + xMin;
             }
             positionAttribute.needsUpdate = true;
             geometry.computeBoundingBox();
-            geometry.computeBoundingSphere(); 
+            geometry.computeBoundingSphere();
         }
     }
 }
@@ -274,6 +273,7 @@ function onMouseDown(event: { preventDefault: () => void; clientX: number; clien
     updateExtendButtonState();
 }
 
+// Repositions the selection indicator above the selected model
 function repositionSelectionIndicator() {
     if (selectedModelMesh) {
         const box = new THREE.Box3().setFromObject(selectedModelMesh);
