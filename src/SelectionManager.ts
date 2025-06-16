@@ -4,8 +4,11 @@ export class SelectionManager {
     private _raycaster: THREE.Raycaster;
     private _mouse: THREE.Vector2;
     private _camera: THREE.Camera;
-    private _selectableObjects: THREE.Object3D[]; // Reference to the list of selectable objects
 
+    // List of objects that can be selected
+    private _selectableObjects: THREE.Object3D[]; 
+
+    // Currently selected model mesh
     private _selectedModelMesh: THREE.Mesh | null = null;
     private _selectionIndicator: THREE.Mesh;
 
@@ -30,7 +33,7 @@ export class SelectionManager {
         return this._selectionIndicator;
     }
 
-    public getSelectedModelMesh(): THREE.Mesh | null {
+    public get SelectedModelMesh(): THREE.Mesh | null {
         return this._selectedModelMesh;
     }
 
@@ -75,6 +78,7 @@ export class SelectionManager {
         }
     }
 
+    // Repositions the selection indicator above the selected model mesh
     public repositionSelectionIndicator(): void {
         if (this._selectedModelMesh) {
             const box = new THREE.Box3().setFromObject(this._selectedModelMesh);
@@ -83,7 +87,7 @@ export class SelectionManager {
 
             this._selectionIndicator.position.set(
                 center.x,
-                box.max.y + 0.2, // Slightly above the object
+                box.max.y + 0.2, 
                 center.z
             );
         }

@@ -49,7 +49,6 @@ export class ExtensionManager {
         if (geometry instanceof THREE.BufferGeometry) {
             const positionAttribute = geometry.attributes.position;
             if (positionAttribute) {
-                let originalPositions;
 
                 // Store a copy of the original positions array in the mesh's userData
                 if (!mesh.userData.originalPositions) {
@@ -64,7 +63,7 @@ export class ExtensionManager {
                 // Get the minimum X value from the bounding box
                 const xMin = geometry.boundingBox ? geometry.boundingBox.min.x : 0;
 
-                originalPositions = mesh.userData.originalPositions;
+                const originalPositions = mesh.userData.originalPositions;
                 const currentPositions = positionAttribute.array;
                 const vertexXValueCount = originalPositions.length / 3;
 

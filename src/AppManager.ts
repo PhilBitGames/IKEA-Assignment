@@ -52,7 +52,7 @@ export class AppManager {
 
         this.setupEventHandlers();
     }
-    
+
     // Connects UI functionality to the model loader and scene manager
     private setupEventHandlers() {
         window.addEventListener('resize', this.handleResize.bind(this));
@@ -68,7 +68,7 @@ export class AppManager {
         });
 
         this.uiManager.onExtendButtonClick(() => {
-            const selectedMesh = this.selectionManager.getSelectedModelMesh();
+            const selectedMesh = this.selectionManager.SelectedModelMesh;
             if (selectedMesh) {
                 this.extensionManager.animateXScale(selectedMesh);
             }
@@ -76,7 +76,7 @@ export class AppManager {
 
         // If the selected model is currently animating, reposition the selection indicator
         this.extensionManager.onAnimatedSelectedModel((currentlyAnimatingMesh: THREE.Mesh | null) => {
-            if(this.selectionManager.getSelectedModelMesh() === currentlyAnimatingMesh) {
+            if (this.selectionManager.SelectedModelMesh === currentlyAnimatingMesh) {
                 this.selectionManager.repositionSelectionIndicator();
             }
         });
